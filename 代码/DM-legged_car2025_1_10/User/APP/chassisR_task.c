@@ -238,20 +238,20 @@ void ChassisR_task(void)
 		vmc.right_T1=0.0f-vmc.right_T1;
 			
 		if(chassis_move.jump_flag==1||chassis_move.jump_flag==2||chassis_move.jump_flag==3)
-		{//跳跃的时候需要更大扭矩
-			mySaturate(&vmc.left_T1,-5.0f,5.0f);   //根据重量修改扭矩
-			mySaturate(&vmc.right_T1,-5.0f,5.0f);
+		{//跳跃的时候需要更大扭矩(4310最大±1.0 Nm)
+			mySaturate(&vmc.left_T1,-1.0f,1.0f);   // 4310电机最大扭矩限制
+			mySaturate(&vmc.right_T1,-1.0f,1.0f);  // 4310电机最大扭矩限制
 		}	
 		else
 		{//不跳跃的时候
-			mySaturate(&vmc.left_T1,-3.0f,3.0f);
-			mySaturate(&vmc.right_T1,-3.0f,3.0f);
+			mySaturate(&vmc.left_T1,-1.0f,1.0f);  // 4310电机扭矩限幅 ±1.0 Nm
+			mySaturate(&vmc.right_T1,-1.0f,1.0f); // 4310电机扭矩限幅 ±1.0 Nm
 		}	
 		
-		if(chassis_move.start_flag==1)	
+		if(chassis_move.start_flag==1)
 		{
-			mit_ctrl3(&hfdcan1,0x03,  0.0f, 0.0f, 0.0f,  0.0f,vmc.left_T1);//左边关节电机
-			mit_ctrl3(&hfdcan2,0x01,  0.0f, 0.0f, 0.0f,  0.0f,vmc.right_T1);//右边关节电机
+			mit_ctrl(&hfdcan1,0x03,  0.0f, 0.0f, 0.0f,  0.0f,vmc.left_T1);//左边关节电机(4310)
+			mit_ctrl(&hfdcan2,0x01,  0.0f, 0.0f, 0.0f,  0.0f,vmc.right_T1);//右边关节电机(4310)
 			
 			mit_ctrl2(&hfdcan1,0x04, 0.0f, 0.0f,0.0f, 0.0f,chassis_move.wheel_motor[0].wheel_T);//左边轮毂电机
 			mit_ctrl2(&hfdcan2,0x02, 0.0f, 0.0f,0.0f, 0.0f,chassis_move.wheel_motor[1].wheel_T);//右边轮毂电机
@@ -265,8 +265,8 @@ void ChassisR_task(void)
 			chassis_move.x=0.0f;
 			chassis_move.x_set=chassis_move.x;
 			
-			mit_ctrl3(&hfdcan1,0x03, 0.0f, 0.0f,0.0f, 0.0f,0.0f);//左边关节电机	
-			mit_ctrl3(&hfdcan2,0x01, 0.0f, 0.0f,0.0f, 0.0f,0.0f);//右边关节电机	
+			mit_ctrl(&hfdcan1,0x03, 0.0f, 0.0f,0.0f, 0.0f,0.0f);//左边关节电机(4310)
+			mit_ctrl(&hfdcan2,0x01, 0.0f, 0.0f,0.0f, 0.0f,0.0f);//右边关节电机(4310)	
 					
 			mit_ctrl2(&hfdcan1,0x04, 0.0f, 0.0f,0.0f, 0.0f, 0.0f);//左边轮毂电机	
 			mit_ctrl2(&hfdcan2,0x02, 0.0f, 0.0f,0.0f, 0.0f, 0.0f);//右边轮毂电机
